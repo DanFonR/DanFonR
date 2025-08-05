@@ -5,7 +5,7 @@
 #define STR_SIZE 100
 #define DEBUG
 
-unsigned char is_pangram(const char *str) {
+uint8_t is_pangram(const char *str) {
 	uint32_t letters = 0U;
 
 	while (*str) {
@@ -20,7 +20,7 @@ unsigned char is_pangram(const char *str) {
 	return letters == ALL_26_LETTERS;
 }
 
-int main() {	
+int main() {
 	#ifdef DEBUG
 	const char str[] = "Furtadas cinco zebras, jegues vermelhos,"
 						 		   " whisky e xales. Por quê?";
@@ -32,7 +32,7 @@ int main() {
 	*/
 	#else
 	char str[STR_SIZE];
-	
+
 	printf("type a string to check if it's a pangram: ");
 	if (!scanf("%99[^\n]", str)) return 1;
 	#endif

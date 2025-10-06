@@ -1,0 +1,47 @@
+#!/bin/bash
+
+rh () {
+    hists=(".lesshst" ".viminfo" ".sudo_as_admin_successful" ".motd_shown")
+
+    rm -f "${HOME}"/.*_history
+
+    for file in "${hists[@]}"; do
+        rm -f "${HOME}/${file}"
+    done
+}
+
+run () {
+	if $(/usr/bin/clang --version &> /dev/null); then
+		clang "$@" && ./a.out && rm a.out
+	else
+		gcc "$@" && ./a.out && rm a.out
+	fi
+}
+
+venv () {
+    if [ -d "./.venv/" ]; then
+        . ./.venv/bin/activate
+    fi
+}
+
+PUU () {
+    for pkg in $(pip list -o | tail -n +3 | awk '{print $1}');
+    do
+		printf "%s " $pkg
+        pip install -U "$pkg" &> /dev/null && echo "upgraded" || {
+			echo "unable to upgrade"
+			break
+		}
+    done
+}
+
+alias UU="apt update && yes | apt full-upgrade && yes | apt autoremove"
+alias CC="rh && history -c"
+alias CCC="CC && clear"
+alias UCE="UU && CCC && exit"
+alias CE="CC && exit"
+alias UC="UU && CC"
+alias UCC="UU && CCC"
+alias la="ls -A"
+alias aliases="nano .termux_aliases"
+alias wormhole="wormhole-rs"

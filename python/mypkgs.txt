@@ -1,0 +1,10 @@
+# requirements.txt
+
+jupyter
+matplotlib
+numpy
+openpyxl
+pandas
+pipdeptree
+requests
+scikit-learn

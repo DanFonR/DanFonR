@@ -1,10 +1,13 @@
 # requirements.txt
+# my common packages
 
 jupyter
+jupyter_server
 matplotlib
+notebook
 numpy
 openpyxl
 pandas
-pipdeptree
 requests
 scikit-learn
+sympy

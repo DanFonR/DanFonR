@@ -73,7 +73,7 @@ int q6(char str[], int *i) {
 
 int main() {
 	char test[] = "X111+1111";
-	turing_t states = {q0, q1, q2, q3, q4};
+	StateFunc states[] = {q0, q1, q2, q3, q4};
 	size_t states_len = lengthof(states);
 	puts((turing(test, states, states_len))? "\naceita\n" : "\nrejeita\n");
 	printf("apos operacao: %s\n", test);

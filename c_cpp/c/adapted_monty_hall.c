@@ -17,9 +17,9 @@ typedef struct {
 } monty_t;
 
 void run_sim(size_t iters) {
-	clock_t t0 = clock(), t1;
-	size_t swaps = 0, no_swaps;
-	monty_t sim;
+	clock_t t0 = clock(), t1 = 0;
+	size_t swaps = 0, no_swaps = 0;
+	monty_t sim = {0, 0, 0};
 
 	for (size_t i = 0; i < iters; i++) {
 		sim.car = rand() % 3;
@@ -27,7 +27,7 @@ void run_sim(size_t iters) {
 
 		sim.host = (sim.car == sim.player)? (sim.player + 1) % 3 : 3 - sim.player - sim.car;
 		sim.player = 3 - sim.player - sim.host;
-		
+
 		swaps += (size_t)(sim.player == sim.car);
 	}
 

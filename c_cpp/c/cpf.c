@@ -1,78 +1,155 @@
 #include <stdio.h>
+#include <stdbool.h>
+#include <ctype.h>
 
-int checar_cpf(char cpf[15]) {
-	int digito_v1 = 0, digito_v2 = 0, ignorado = 0;
+#define SECAO 3
+#define TAMANHO_CPF 11
 
-	for (int i = 0; i < 11; i++) {
-		if (cpf[i] == '.') {
-			ignorado++;
-			continue;
+typedef enum {
+	INVALIDO = -1,
+	VALIDO = 1,
+	VALIDO_SO_NUMERO = 2
+} validade;
+
+typedef enum {
+	SEPARADOR_1 = 3,
+	SEPARADOR_2 = 7,
+	SEPARADOR_3 = 11
+} posicoes;
+
+
+typedef struct {
+	unsigned char v2 : 4; /* [0,10] */
+	unsigned char v1 : 4;
+} digitos_v;
+
+bool checar_cpf(const char * restrict cpf, bool so_digitos) {
+	digitos_v digitos = {0, 0};
+	char verif_1 = TAMANHO_CPF + (so_digitos? -2 : 1);
+	char verif_2 = TAMANHO_CPF + (so_digitos? -1 : 2);
+	char digito;
+
+	if (so_digitos) {
+		for (char i = 0; i < TAMANHO_CPF - 2; i++) {
+			digito = cpf[i] - '0';
+			digitos.v1 = (digitos.v1 + digito * (i + 1)) % TAMANHO_CPF;
+			digitos.v2 = (digitos.v2 + digito * i) % TAMANHO_CPF;
 		}
+	}
+	else {
+		char chave = 0;
 
-		digito_v1 += (cpf[i] - '0') * (i + 1 - ignorado);
-		digito_v2 += (cpf[i] - '0') * (i - ignorado);
+		for (char i = 0; i < TAMANHO_CPF; i += 4) {
+			#pragma unroll
+			for (char j = 0; j < SECAO; j++) {
+				chave = (3 * i / 4 + j);
+				digito = cpf[i + j] - '0';
+				digitos.v1 = (digitos.v1 + digito * (chave + 1)) % TAMANHO_CPF;
+				digitos.v2 = (digitos.v2 + digito * chave) % TAMANHO_CPF;
+			}
+		}
 	}
 
-	digito_v2 = (digito_v2 + 9 * digito_v1) % 11;
-	digito_v1 %= 11;
+	digitos.v2 = (digitos.v2 + 9 * digitos.v1) % TAMANHO_CPF;
 
-	return (cpf[12] - '0' == digito_v1)
-							&& (cpf[13] - '0' == digito_v2);
+	return (cpf[verif_1] - '0' == digitos.v1)
+		&& (cpf[verif_2] - '0' == digitos.v2);
 }
 
-int checar_formato_cpf(char cpf[15]) {
-	int i;
+validade checar_formato_cpf(const char *cpf) {
+	char pos;
+	bool so_digitos = true;
 
-	for (i = 0; cpf[i] != '\0'; i++) {
-		if ((cpf[i] == '.' && !(i == 3 || i == 7)) /* . fora do lugar */
-			|| (cpf[i] == '-' && i != 11) /* - fora do lugar */
-			|| (!(('0' <= cpf[i] && cpf[i] <= '9') /* nao eh cpf */
-					|| cpf[i] == '.' || cpf[i] == '-'))
-			|| (('0' <= cpf[i] && cpf[i] <= '9') /* digito fora do lugar */
-					&& !(i != 3 || i != 7 || i != 11))
-				) return 0;
+	for (pos = 0; cpf[pos] != '\0'; pos++) {
+		if (!isdigit(cpf[pos])) {
+			so_digitos = false;
+
+			switch (cpf[pos]) {
+				case '.':
+					if (!(pos == SEPARADOR_1 || pos == SEPARADOR_2))
+						return INVALIDO;
+					break;
+				case '-':
+					if (pos != SEPARADOR_3)
+						return INVALIDO;
+					break;
+				default:
+					return INVALIDO;
+			}
+		}
+
+		if (isdigit(cpf[pos]) && !so_digitos
+		&& (pos == SEPARADOR_1 || pos == SEPARADOR_2 || pos == SEPARADOR_3))
+			return INVALIDO;
+
+		if (pos > 14)
+			return INVALIDO;
 	}
 
-	if (i != 14) return 0;
+	if (so_digitos) {
+		if (pos == TAMANHO_CPF)
+			return VALIDO_SO_NUMERO;
 
-	return 1;
+		return INVALIDO;
+	}
+
+	if (pos != 14)
+		return INVALIDO;
+
+	return VALIDO;
 }
 
 int main(int argc, char *argv[]) {
-	char cpf[15];
+	char cpf[15] = {0};
 
 	switch (argc) {
 		case 1:
-			fprintf(stderr, "insira seu cpf no formato XXX.XXX.XXX-XX: ");
+			fputs(
+				"insira seu cpf no formato XXX.XXX.XXX-XX "
+				"(ou SAIR p/ sair): ",
+				stderr
+			);
 
 			if (!scanf("%14s", cpf)) {
-				fprintf(stderr, "um erro aconteceu, tente novamente\n");
-				return -1;
+				fputs("um erro aconteceu, tente novamente\n", stderr);
+				return 1;
 			}
 
 			break;
 
 		case 2:
-			for (int i = 0; (cpf[i] = argv[1][i]) != '\0'; i++);
+			for (char i = 0; i < 15 && argv[1][i] != '\0'; i++)
+				cpf[i] = argv[1][i];
 			break;
 
 		default:
-			fprintf(stderr, "numero invalido de argumentos\n"
-			"este programa checa a validade de um cpf no formato XXX.XXX.XXX-XX\n");
-			return -1;
+			fputs(
+				"numero invalido de argumentos\n"
+				"este programa checa a validade de um CPF "
+				"no formato XXX.XXX.XXX-XX\n",
+				stderr
+			);
+			return 1;
 	}
 
-	if (checar_formato_cpf(cpf) == 0) {
-		fprintf(stderr, "formato invalido de cpf\n"
-		"inclua pontos e tracos\n");
-		return -1;
+	bool so_digitos = true;
+
+	switch (checar_formato_cpf(cpf)) {
+		case INVALIDO:
+			fprintf(stderr, "formato invalido de cpf\n");
+			return 1;
+
+		case VALIDO: /* fall-through intencional */
+			so_digitos = false;
+
+		case VALIDO_SO_NUMERO:
+			if (checar_cpf(cpf, so_digitos))
+				puts("cpf valido");
+			else {
+				puts("cpf invalido");
+				return 1;
+			}
 	}
-	else if (checar_cpf(cpf) == 0) {
-		puts("cpf invalido");
-		return 0;
-	}
-	
-	puts("cpf valido");
-	
+
 	return 0;
 }

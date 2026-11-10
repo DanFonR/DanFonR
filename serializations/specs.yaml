@@ -1,0 +1,78 @@
+desktop:
+  purposes:
+    - "Gaming (Main)"
+    - "Arts"
+    - "Heavy Compute Jobs (e.g. CUDA, PyTorch, Vulkan)"
+  components:
+    cpu: "AMD Ryzen 9 9950X3D (-20mV undervolt, 85°C)"
+    thermal-paste: "Noctua NT-H2"
+    case-fans:
+      - "Aerocool Eclipse 12 ARGB (Back Exhaust)"
+      - "Noctua NF-A12x25 G2 PWM Sx2-PP (Front Intake)"
+    cooler: "Thermalright Phantom Spirit 120 EVO"
+    motherboard: "MSI MPG X870E CARBON WIFI"
+    storage:
+      - "Kingston FURY Renegade 4096GB (SFYRDK/4000G, D:, NixOS)"
+      - "Kingston FURY Renegade G5 1024GB (SFYR2S/1T0, C:)"
+    case: "Redragon Nosecone (GC-909)"
+    psu: "Corsair HX1500i 2025 (CP-9020215-WW)"
+    ram: "CORSAIR Vengeance 128GB (2x64GB) 6400MT/s CL42 (CMK128GX5M2B6400C42) (stable on default XMP)"
+    gpu:
+      - "MSI GeForce RTX 3050 LP 6G OC (G3050LP6C, Secondary, 32-bit Physx)"
+      - "Palit GeForce RTX 5080 GamingPro OC (NE75080S19T2-GB2031A, Primary)"
+  peripherals:
+    mouse: "CORSAIR SCIMITAR RGB ELITE (CH-9304211-NA)"
+    keyboard: "Redragon Dharma Magnetic (K556RGB-M)"
+    monitors:
+      - "Concórdia P2404 (Secondary, Vertical)"
+      - "TCL 34R83Q (Main, Landscape)"
+    headset: "JBL Quantum 910 Wireless"
+  software:
+    windows:
+      - "EA App"
+      - "Epic Games Launcher"
+      - "Steam"
+      - "Ubisoft Connect"
+    nixos-unstable:
+      - "Ardour"
+      - "Armorpaint (Custom Derivation)"
+      - "Audacity"
+      - "Blender"
+      - "CHIMERA Vocal Synth (Custom Derivation)"
+      - "Darktable"
+      - "Friction"
+      - "GIMP"
+      - "Inkscape"
+      - "KDE Plasma (Wayland)"
+      - "Kdenlive"
+      - "Klattsch (Custom Derivation)"
+      - "Krita"
+      - "Krokiet"
+      - "Natron"
+laptop:
+  purposes:
+    - "General Productivity"
+    - "Study"
+    - "General Programming"
+  components:
+    platform: "Acer Aspire 5 (A515-57-55B8)"
+    ram: "2 x Kingston FURY Impact 16GB 3200MT/s 1Rx8 CL20 (KF432S20IB/16)"
+    storage:
+      - "SanDisk Plus 1TB A3N (SDSSDA3N-1T00, D: (NTFS), NixOS (BTRFS))"
+      - "SK Hynix HFS256GEJ9X110N (C: (NTFS))"
+  software:
+    windows:
+      - ".NET Framework"
+      - "Microsoft Office"
+      - "Microsoft Power BI"
+      - "Visual Studio Code"
+    nixos-unstable:
+      - "BTOP++"
+      - "Hyprland"
+      - "Hyprlock"
+      - "Limine"
+      - "Neovim"
+      - "Obsidian"
+      - "Vivaldi"
+      - "Yazi"
+      - "yt-dlp"
